@@ -4,6 +4,10 @@ import {
   NextFunction 
 } from "express";
 
+const CryptoJS = require('crypto-js');
+
+import { UserProps } from "../Models/User";
+
 const express = require('express');
 
 const User = require('../Models/User');
@@ -14,7 +18,6 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
   const { 
     username,
     email,
-    password,
     profilePic,
     isAdmin
   } = req.body;
@@ -22,13 +25,16 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
   const newUser = new User({
     username,
     email,
-    password,
+    password: CryptoJS.AES.encrypt(
+      req.body.password,
+      process.env.SECRET_ALGORITHM
+    ).toString(),
     profilePic,
     isAdmin
   });
   
   try {
-    const user = await newUser.save();
+    const user: UserProps = await newUser.save();
 
     return res.status(200).json(user);
   } catch (error) {

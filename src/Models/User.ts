@@ -1,6 +1,6 @@
 import { Schema, model  } from 'mongoose';
 
-interface UserProps {
+export interface UserProps {
   username: string;
   email: string;
   password: string;
@@ -16,4 +16,4 @@ const userSchema = new Schema<UserProps>({
   isAdmin: { type: Boolean, default: false }
 }, { timestamps: true });
 
-module.exports = model("User", userSchema);
+module.exports = model<UserProps>("User", userSchema);
