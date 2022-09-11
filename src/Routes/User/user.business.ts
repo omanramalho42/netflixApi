@@ -20,7 +20,7 @@ export const getUser = async (id: string) => {
 
 export const updateUser = async (id: string, username: string, password: string) => {
   try {
-    const user = await userRepository.getUser(id);
+    const user: UserProps = await userRepository.getUser(id);
     
     if(!user) {
       const err = 'Usuário não encontrado'
@@ -29,7 +29,10 @@ export const updateUser = async (id: string, username: string, password: string)
 
     const newUser = {
       username,
-      password
+      password: CryptoJS.AES.encrypt(
+        password,
+        process.env.SECRET_ALGORITHM
+      ).toString(),
     }
 
     const updateUser = userRepository.updateUser(id, newUser);
@@ -61,5 +64,19 @@ export const deleteUser = async (id: string) => {
     return deletedUser;
   } catch (error: any) {
     throw 'Ocorreu um erro inesperado ao deletar o usuário ' + error
+  }
+}
+
+export const getAllUsers = async () => {
+  try {
+    const users = await userRepository.getAllUsers();
+  
+    if(!users) {
+      throw 'Não existem usuários cadstrados'
+    }
+    
+    return users;
+  } catch (error) {
+    throw error;
   }
 }

@@ -31,3 +31,13 @@ export const deleteUser = async (id: string) => {
     throw('Ocorreu um erro inesperado ao deletar o usuário: ' + error);
   }
 }
+
+export const getAllUsers = async () => {
+  try {
+    const users = await User.find();
+    
+    return users;
+  } catch (error: any) {
+    throw('Ocorreu um erro inesperado ao pegar todos os usuários: ' + error);
+  }
+}

@@ -19,6 +19,17 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
   }
 }
 
+export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const data = await userBusiness.getAllUsers();
+
+    res.status(200).json({ message: 'Sucesso ao listar os usuários', data });
+  } catch (error: any) {
+    res.status(500).json('Ocorreu um erro inesperado ao listar os usuários: ' + error)
+    next(error);
+  }
+}
+
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
