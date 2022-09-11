@@ -1,6 +1,14 @@
-const mongoose = require('mongoose');
+import { Schema, model  } from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+interface UserProps {
+  username: string;
+  email: string;
+  password: string;
+  profilePic: string;
+  isAdmin: boolean;
+}
+
+const userSchema = new Schema<UserProps>({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -8,4 +16,4 @@ const userSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false }
 }, { timestamps: true });
 
-module.exports = mongoose.modal("User", userSchema);
+module.exports = model("User", userSchema);
