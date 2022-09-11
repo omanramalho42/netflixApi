@@ -19,14 +19,13 @@ app.listen(process.env.REACT_API_PORT || 3001, () => {
   console.log('[Server 🦇] Running on port: ' + process.env.REACT_API_PORT || 3001);
 });
 
-router.get('/', (res: Response, req: Request, next: NextFunction) => {
+app.get('/', (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.params);
     const message = 'Successo';
     
     return res.status(201).json({ message });
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
