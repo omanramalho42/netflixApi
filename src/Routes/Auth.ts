@@ -14,9 +14,7 @@ const User = require('../Models/User');
 
 const router = express.Router();
 
-interface UserI {
-  _doc: UserProps
-}
+const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
   const { 
@@ -49,12 +47,12 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
 
 router.get('/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user: UserI = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
     if(!user) {
       return res.status(401).json('Este usuário não existe');
     }
 
-    const decodedPass = CryptoJS.AES.decrypt(user._doc.password, process.env.SECRET_ALGORITHM);
+    const decodedPass = CryptoJS.AES.decrypt(user.password, process.env.SECRET_ALGORITHM);
     const originalPass = decodedPass.toString(CryptoJS.enc.Utf8);
 
     if(originalPass !== req.body.password) {
@@ -63,7 +61,13 @@ router.get('/login', async (req: Request, res: Response, next: NextFunction) => 
 
     const { password, ...users } = user._doc;
 
-    res.status(201).json(users);
+    const accessToken = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin }, 
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "5d" }
+    );
+
+    res.status(201).json({ ...users, accessToken });
   } catch (error) {
     res.status(401).json(error);
     next(error);
