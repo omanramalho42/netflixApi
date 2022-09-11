@@ -14,7 +14,7 @@ const User = require('../Models/User');
 
 const router = express.Router();
 
-interface userI {
+interface UserI {
   _doc: UserProps
 }
 
@@ -49,23 +49,21 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
 
 router.get('/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user: UserProps = await User.findOne({ email: req.body.email });
+    const user: UserI = await User.findOne({ email: req.body.email });
     if(!user) {
       return res.status(401).json('Este usuário não existe');
     }
 
-    const decodedPass = CryptoJS.AES.decrypt(user.password, process.env.SECRET_ALGORITHM);
+    const decodedPass = CryptoJS.AES.decrypt(user._doc.password, process.env.SECRET_ALGORITHM);
     const originalPass = decodedPass.toString(CryptoJS.enc.Utf8);
 
     if(originalPass !== req.body.password) {
       return res.status(401).json("Credenciais incorretas");
     }
 
-    const { password, ...users } = user;
+    const { password, ...users } = user._doc;
 
-    const documentUser: any = users; 
-
-    res.status(201).send(documentUser._doc);
+    res.status(201).json(users);
   } catch (error) {
     res.status(401).json(error);
     next(error);
