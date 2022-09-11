@@ -4,19 +4,13 @@ import {
   NextFunction 
 } from "express";
 
+import { UserProps } from "../../Models/User";
+
 const CryptoJS = require('crypto-js');
-
-import { UserProps } from "../Models/User";
-
-const express = require('express');
-
-const User = require('../Models/User');
-
-const router = express.Router();
-
+const User = require('../../Models/User');
 const jwt = require('jsonwebtoken');
 
-router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
+export const register = async (req: Request, res: Response, next: NextFunction) => {
   const { 
     username,
     email,
@@ -43,9 +37,9 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
     res.status(400).json(error);
     next(error);
   }
-});
+}
 
-router.get('/login', async (req: Request, res: Response, next: NextFunction) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if(!user) {
@@ -72,7 +66,4 @@ router.get('/login', async (req: Request, res: Response, next: NextFunction) => 
     res.status(401).json(error);
     next(error);
   }
-});
-
-
-module.exports = router;
+}

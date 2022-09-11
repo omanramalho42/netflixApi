@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 
 const mongoose = require("mongoose");
 
-const authRoute = require('./Routes/Auth');
+const authRoute = require('./Routes/Auth/auth.route');
+const userRoute = require('./Routes/User/user.route');
 
 const app = express();
 app.use(bodyParser.json());
@@ -18,10 +19,12 @@ mongoose.connect(process.env.MONGODB_URL , {
   .then(() => console.log('Mongodb connection successful'))
   .catch((error: any) => console.log('Ocorreu um erro durante a conexao com o banco de dados: ' + error.message))
 
+
 app.listen(process.env.REACT_API_PORT || 3001, () => {
   console.log('[Server 🦇] Running on port: ' + process.env.REACT_API_PORT || 3001);
 });
 
 app.use('/api/auth', authRoute);
+app.use('/api/users', userRoute);
 
 
