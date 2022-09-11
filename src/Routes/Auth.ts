@@ -45,8 +45,14 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
 
 router.get('/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { username, password } = req.body;
+    const user: UserProps = await User.findOne({ email: req.body.email })
+    !user && res.status(401).json('Este usuário não existe');
 
+    const decodedPass = CryptoJS.AES.decrypt(user.password, process.env.SECRET_ALGORITHM);
+    const originalPass = decodedPass.toString(CryptoJS.enc.Utf8);
+
+    originalPass !== req.body.password &&
+      res.status(401).json("Credenciais incorretas");
 
     res.status(201).json({ message: 'login realizado com sucesso' });
   } catch (error) {
