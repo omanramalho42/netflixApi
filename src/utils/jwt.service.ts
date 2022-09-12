@@ -43,31 +43,22 @@ export const verifyToken = (req: any, res: Response, next: NextFunction) => {
   }
 }
 
-export const verifyTokenAndAdmin = async (req: any, res: Response, next: NextFunction) => {
-  try {
-    const authHeader = req.headers.token;
-
-    if(authHeader) {
-      const token = authHeader.split(" ")[1];
-      
-      await jwt.verify(token, process.env.JWT_SECRET_KEY, (err: any, user: any) => {
-        if(err) {
-          return res.status(400).send('Token não é válido!');
-        }
-
-        req.user = user;
-          
-        if(!user.isAdmin) {
-          return res.status(400).send('Você não tem permissão para fazer isso!');
-        } else {
-          next();
-        }
-      });
+export const verifyTokenAndAuthorization = (req: any, res: Response, next: NextFunction) => {
+  verifyToken(req, res, () => {
+    if(req.user.id === req.params.id || req.user.isAdmin) {
+      next();
     } else {
-      return res.status(400).json('Você não está autenticado');
+      res.status(403).json('Você não tem permissão para fazer isso');
     }
-  } catch (error: any) {
-    res.status(500).json('Ocorreu um erro ao verificar o token de acesso ' + error);
-    next(error);
-  }
-}
+  });
+};
+
+export const verifyTokenAndAdmin = (req: any, res: Response, next: NextFunction) => {
+  verifyToken(req, res, () => {
+    if(req.user.isAdmin) {
+      next();
+    } else {
+      res.status(403).json('Você não tem permissão para fazer isso');
+    };
+  });
+};
