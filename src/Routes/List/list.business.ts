@@ -1,9 +1,9 @@
 const ListRepository = require('./list.repository');
 const List = require('../../Models/List');
 
-export const getLists = async (query: false) => {
+export const getLists = async (type = '', genre = '') => {
   try {
-    const lists = await ListRepository.getMovies(query);
+    const lists = await ListRepository.getLists(type, genre);
 
     if(!lists) {
       throw 'Não existe filmes na lista';
@@ -19,23 +19,24 @@ export const getLists = async (query: false) => {
   }
 }
 
-export const createList = async (movie: any) => {
+export const createList = async (list: any) => {
   try {
+    console.log(list, 'list');
     const newList = new List({
-      title: movie.title,
-      desc: movie.title,
-      avaliation: movie.title,
-      img: movie.img,
-      ...movie
+      title: list.title,
+      desc: list.title,
+      avaliation: list.title,
+      img: list.img,
+      ...list
     });
 
-    const list = await ListRepository.createList(newList);
+    const data = await ListRepository.createList(newList);
 
-    if(!list) {
+    if(!data) {
       throw 'Ocorreu um erro ao criar a lista';
     }
 
-    return list;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -77,6 +78,7 @@ export const deleteList = async (id: string) => {
       const err = 'Lista não encontrada'
       throw err;
     }
+
     const listDeleted = await ListRepository.deleteList(id);
 
     if(!listDeleted) {

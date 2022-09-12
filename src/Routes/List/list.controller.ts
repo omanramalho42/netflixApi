@@ -4,9 +4,11 @@ const ListBusiness = require('./list.business');
 
 export const getLists = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { new: query } = req.query;
+    const { type, genre } = req.query;
 
-    const lists:any = await ListBusiness.getLists(query);
+    console.log(type, genre, 'req.query');
+
+    const lists:any = await ListBusiness.getLists(type, genre);
 
     return res.status(200).json(lists.reverse());
   } catch (error: any) {

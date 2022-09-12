@@ -2,13 +2,27 @@ import { MovieProps } from "../../Models/Movie";
 
 const List = require('../../Models/List');
 
-export const getLists = async (query: boolean) => {
+export const getLists = async (type: string, genre: string) => {
   try {
-    const lists = await query 
-    ? List.find().sort({ _id: -1 }).limit(2) 
-    : List.find();
+    let list = [];
 
-    return lists;
+    if(type) {
+      if(genre) {
+        list = await List.aggregate([
+          { $sample: { size: 10 } },
+          { $match: { type: type, genre: genre } }, 
+        ]);
+      } else {
+        list = await List.aggregate([
+          { $sample: { size: 10 } },
+          { $match: { type: type } },
+        ])
+      }
+    } else {
+      list = await List.aggregate([ { $sample: { size: 10 } }]);
+    }
+
+    return list;
   } catch (error) {
     throw error;
   }
