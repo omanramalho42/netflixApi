@@ -5,10 +5,10 @@ import {
 } from "express";
 
 import { UserProps } from "../../Models/User";
+import { generateToken } from "../../utils/jwt.service";
 
 const CryptoJS = require('crypto-js');
 const User = require('../../Models/User');
-const jwt = require('jsonwebtoken');
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   const { 
@@ -55,11 +55,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     const { password, ...users } = user._doc;
 
-    const accessToken = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin }, 
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: "5d" }
-    );
+    const accessToken = generateToken(user._id, user.isAdmin);
 
     res.status(201).json({ ...users, accessToken });
   } catch (error) {
