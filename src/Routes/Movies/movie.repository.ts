@@ -7,9 +7,29 @@ export const getMovies = async (query: boolean) => {
     const movies = await query 
     ? Movie.find().sort({ _id: -1 }).limit(2) 
     : Movie.find();
-  
 
     return movies;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getRandomMovie = async (type: string) => {
+  try {
+    let randomMovie;
+    if(type === 'series') {
+      randomMovie = await Movie.aggregate([
+        { $match: { isSeries: true } },
+        { $sample: { size: 1} },
+      ]);
+    } else {
+      randomMovie = await Movie.aggregate([
+        { $match: { isSeries: false } },
+        { $sample: { size: 1} },
+      ]);
+    }
+  
+    return randomMovie;
   } catch (error) {
     throw error;
   }
@@ -27,9 +47,9 @@ export const getMovie = (id: string) => {
 
 export const insertMovie = async (newMovie: any) => {
   try {
-    const movies = await newMovie.save();
+    const movie = await newMovie.save();
 
-    return movies;
+    return movie;
   } catch (error) {
     throw error;
   }

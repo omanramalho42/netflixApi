@@ -6,17 +6,9 @@ export const getMovies = async (req: Request, res: Response, next: NextFunction)
   try {
     const { new: query } = req.query;
 
-    const data:any = await MovieBusiness.getMovies(query);
+    const movies:any = await MovieBusiness.getMovies(query);
 
-    if(!data) {
-      throw 'Ocorreu um erro ao pegar a lista de filmes';
-    }
-
-    if(data.length === 0) {
-      return res.status(403).json('Lista de filmes vazia');
-    }
-
-    return res.status(200).json(data);
+    return res.status(200).json(movies.reverse());
   } catch (error: any) {
     next(error);
   }
@@ -30,6 +22,18 @@ export const getMovie = async (req: Request, res: Response, next: NextFunction) 
     if(data.length === 0) {
       return res.status(403).json('Filme não tem informaçoes');
     }
+
+    return res.status(200).json(data);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+export const getRandomMovie = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { type } = req.query;
+
+    const data:any = await MovieBusiness.getRandomMovie(type);
 
     return res.status(200).json(data);
   } catch (error: any) {

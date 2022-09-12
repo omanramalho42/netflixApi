@@ -11,7 +11,29 @@ export const getMovies = async (query: false) => {
       throw 'Não existe filmes na lista';
     }
 
+    if(movies.length === 0) {
+      throw 'Lista de filmes vazia';
+    }
+
     return movies;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getRandomMovie = async (type = 'null') => {
+  try {
+    const randomMovie = await MovieRepository.getRandomMovie(type);
+
+    if(!randomMovie) {
+      throw 'Filme não encontrado';
+    }
+
+    if(randomMovie.length === 0) {
+      throw 'Filme não tem informaçoes';
+    }
+
+    return randomMovie;
   } catch (error) {
     throw error;
   }
