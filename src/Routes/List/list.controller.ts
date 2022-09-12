@@ -6,8 +6,6 @@ export const getLists = async (req: Request, res: Response, next: NextFunction) 
   try {
     const { type, genre } = req.query;
 
-    console.log(type, genre, 'req.query');
-
     const lists:any = await ListBusiness.getLists(type, genre);
 
     return res.status(200).json(lists.reverse());
