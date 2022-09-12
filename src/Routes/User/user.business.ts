@@ -18,7 +18,7 @@ export const getUser = async (id: string) => {
   }
 }
 
-export const updateUser = async (id: string, username: string, password: string) => {
+export const updateUser = async (id: string, username: string, password: string, body: any) => {
   try {
     const user: UserProps = await userRepository.getUser(id);
     
@@ -33,9 +33,10 @@ export const updateUser = async (id: string, username: string, password: string)
         password,
         process.env.SECRET_ALGORITHM
       ).toString(),
+      ...body
     }
 
-    const updateUser = userRepository.updateUser(id, newUser);
+    const updateUser = await userRepository.updateUser(id, newUser);
 
     return updateUser;
   } catch (error: any) {
@@ -67,15 +68,47 @@ export const deleteUser = async (id: string) => {
   }
 }
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (query = false) => {
   try {
-    const users = await userRepository.getAllUsers();
+    const users = await userRepository.getAllUsers(query);
   
     if(!users) {
       throw 'Não existem usuários cadstrados'
     }
     
     return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getStats = async () => {
+  try {
+    const today: any = new Date();
+    const lastYear = today.setFullYear(today.setFullYear() - 1);
+
+    const monthsArray = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro"
+    ];
+
+    const userStats = await userRepository.getStats();
+  
+    if(!userStats) {
+      throw 'Não existem dados desse usuário cadstrados'
+    }
+    
+    return userStats;
   } catch (error) {
     throw error;
   }

@@ -12,8 +12,10 @@ const {
 
 router.get('/', verifyToken, userController.getAllUsers);
 router.get('/:id', verifyTokenAndAuthorization, userController.getUser);
+router.get('/stats/:id', verifyTokenAndAuthorization, userController.getStats);
 router.put('/:id', verifyTokenAndAdmin, userController.updateUser);
 router.delete('/:id', verifyTokenAndAdmin, userController.deleteUser);
+
 
 module.exports = router;
 

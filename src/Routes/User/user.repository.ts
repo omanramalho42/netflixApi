@@ -32,12 +32,35 @@ export const deleteUser = async (id: string) => {
   }
 }
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (query: Boolean) => {
   try {
-    const users = await User.find();
+    const users = await query 
+      ? User.find().sort({ _id: -1 }).limit(2) 
+      : User.find();
     
     return users;
   } catch (error: any) {
     throw('Ocorreu um erro inesperado ao pegar todos os usuários: ' + error);
+  }
+}
+
+export const getStats = async () => {
+  try {
+    const userStats = await User.aggregate([
+      {
+        $project: {
+          month: { $month: "$createdAt" }
+        }
+      }, {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 }
+        },
+      },
+    ]);
+    
+    return userStats;
+  } catch (error: any) {
+    throw('Ocorreu um erro inesperado ao pegar dados do usuário: ' + error);
   }
 }

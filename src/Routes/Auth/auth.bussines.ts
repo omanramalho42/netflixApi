@@ -1,6 +1,7 @@
 const CryptoJS = require('crypto-js');
 
 const AuthRepository = require('./auth.repository');
+
 import { UserProps } from "../../Models/User";
 import { generateToken } from "../../utils/jwt.service";
 
@@ -29,7 +30,6 @@ export const register = async (username: string, email: string, password: string
     throw error;
   }
 }
-
 
 export const login = async (email: string, pass: string) => {
   try {

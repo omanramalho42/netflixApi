@@ -21,7 +21,9 @@ export const getUser = async (req: Request, res: Response, next: NextFunction) =
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const data = await userBusiness.getAllUsers();
+    const { new: query } = req.query;
+
+    const data = await userBusiness.getAllUsers(query);
 
     res.status(200).json({ message: 'Sucesso ao listar os usuários', data });
   } catch (error: any) {
@@ -30,12 +32,23 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
+export const getStats = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const data = await userBusiness.getStats();
+
+    res.status(200).json({ message: 'Sucesso ao pegar dados dos usuários', data });
+  } catch (error: any) {
+    res.status(500).json('Ocorreu um erro inesperado ao pegar dados dos usuários: ' + error)
+    next(error);
+  }
+}
+
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { username, password } = req.body;
-
-    const data = await userBusiness.updateUser(id, username, password);
+    const { username, password, ...body } = req.body;
+      
+    const data = await userBusiness.updateUser(id, username, password, body);
 
     res.status(200).json({ message: 'Sucesso ao atuliazar o usuário', data });
   } catch (error: any) {

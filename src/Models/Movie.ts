@@ -1,6 +1,21 @@
 import { Schema, model } from 'mongoose';
 
-const movieSchema = new Schema({
+export interface MovieProps {
+    title: string;
+    desc: string;
+    avaliation: number;
+    img: string;
+    imgTitle?: string;
+    imgSm?: string;
+    trailer?: string;
+    video?: string;
+    year?: string;
+    limit?: string;
+    genre?: string;
+    isSeries?: boolean;
+}
+
+const MovieSchema = new Schema<MovieProps>({
   title: { type: String, required: true, unique: true },
   desc: { type: String, required: true },
   avaliation: { type: Number, required: true },
@@ -15,4 +30,4 @@ const movieSchema = new Schema({
   isSeries: { type: Boolean, default: false }
 }, { timestamps: true });
 
-module.exports = model("Movie", movieSchema);
+module.exports = model("Movie", MovieSchema);

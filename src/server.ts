@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 
 const authRoute = require('./Routes/Auth/auth.route');
 const userRoute = require('./Routes/User/user.route');
+const movieRoute = require('./Routes/Movies/movie.route');
 
 const app = express();
 app.use(bodyParser.json());
@@ -26,5 +27,6 @@ app.listen(process.env.REACT_API_PORT || 3001, () => {
 
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
+app.use('/api/movies', movieRoute);
 
 
